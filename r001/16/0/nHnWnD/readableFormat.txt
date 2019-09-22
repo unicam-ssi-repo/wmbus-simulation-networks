@@ -1,0 +1,18 @@
+Convergence (0-yes,1-no):	0.0
+RM: Device-Device Request Failed Probability :	5.809128761291504
+RM: Device-Device Request Success Probability :	94.19087219238281
+RM: Device-Device Response Failed Probability :	4.351395606994629
+RM: Device-Device Response Success Probability :	95.64860534667969
+RM: Master Fault %:	12.289395441030724
+RM: Master average path length:	2.9474727452923686
+RM: Request Header size	144.0
+RM: Request Packet Block count:	2.0
+RM: Request Packet size	10.0
+RM: Request Payload size (ecc):	10.0
+RM: Request Payload size (no-ecc):	10.0
+RM: Response Header size	144.0
+RM: Response Packet Block count:	2.0
+RM: Response Packet size	13.0
+RM: Response Payload size (ecc):	13.0
+RM: Response Payload size (no-ecc):	13.0
+

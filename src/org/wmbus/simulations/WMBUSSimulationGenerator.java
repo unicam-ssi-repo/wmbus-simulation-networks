@@ -12,7 +12,7 @@ import yang.simulation.network.SimulationNetworkWithDistance;
 public class WMBUSSimulationGenerator {
     public static WMBusStats performSimulation(SimulationNetworkWithDistance simulationWrapper, boolean withHamming, boolean withWakeup, boolean withDetailNoise, WMbusSimulationEventInterface events) {
         ConvergenceModel simulationConvergence = new InitialSkipWithTimesAverageConvergenceModel(new InitialSkipTimesAverageConvergenceConfigModel(
-                1000,
+                simulationWrapper.network.vertexSet().size()*1000,
                 1,
                 5,
                 10,

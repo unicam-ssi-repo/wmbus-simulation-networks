@@ -26,9 +26,18 @@ public class WMBUSSimulationRun {
                 System.out.println("Failed to create " + baseFolder);
                 continue;
             }
-            System.out.println("Create network with " + String.valueOf(nodes)+ " nodes ");
-            System.out.flush();
-            simulations.performSimulationsForANetwork(nodes, baseFolder);
+            simulations.performSimulationsForANetwork(nodes,0,5,25, baseFolder);
+            /*for (int networkRange = 0; networkRange < 3; networkRange++){
+                if (networkRange == 0){
+                    simulations.performSimulationsForANetwork(nodes,networkRange,10,50, baseFolder);
+                }else if (networkRange == 1 ){
+                    simulations.performSimulationsForANetwork(nodes,networkRange,50,100, baseFolder);
+                }else {
+                    simulations.performSimulationsForANetwork(nodes,networkRange,100,150, baseFolder);
+                }
+
+            }*/
+
 
         }
     }

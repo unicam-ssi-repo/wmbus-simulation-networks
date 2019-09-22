@@ -6,14 +6,14 @@ import org.wmbus.simulations.WMBUSSimulationRun;
 
 public class SimulationsMain {
     public static void main(String[] args) {
-        /*Configurator.currentConfig()
+        Configurator.currentConfig()
                 .formatPattern("{level}: {class}.{method}()\t{message}")
                 .level(Level.OFF)
                 .activate();
-         */
+
         WMBUSSimulationRun simulation = new WMBUSSimulationRun(
-                3,
-                30,
+                Integer.parseInt(args[0]),
+                Integer.parseInt(args[0]),
                 System.getProperty("user.dir") + "/results/"
         );
         simulation.run();
