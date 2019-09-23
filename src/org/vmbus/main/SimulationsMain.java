@@ -2,7 +2,7 @@ package org.vmbus.main;
 
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
-import org.wmbus.simulations.WMBUSSimulationRun;
+import org.wmbus.simulations.network.single.WMBUSSimulationRun;
 
 public class SimulationsMain {
     public static void main(String[] args) {
