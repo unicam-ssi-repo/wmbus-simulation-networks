@@ -100,7 +100,7 @@ public class WMBUSSimulations implements WMbusSimulationEventInterface {
         NetworkGeneratorInterconnected2DInstance neighbornSpace;
         System.out.println("Create network with " + String.valueOf(nodes)+ " nodes  networkLoad:"+String.valueOf(networkLoad));
         Instant nstart = Instant.now();
-        YangNetwork attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(nodes,5000,nodeMinRadius,nodeMaxRadius,2500,2500,-1);
+        YangNetwork attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(nodes,2500,nodeMinRadius,nodeMaxRadius,2500,2500,-1);
         Instant nend = Instant.now();
         System.out.println("Network created in  " + Duration.between(nstart, nend).toSeconds() + " seconds");
         System.out.flush();
