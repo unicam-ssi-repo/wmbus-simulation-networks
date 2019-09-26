@@ -1,5 +1,6 @@
 package org.wmbus.simulations.network.multiple;
 
+import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.simulation.ResultTable;
 import org.wmbus.simulation.convergence.model.ConvergenceModel;
 import org.wmbus.simulation.convergence.model.InitialSkipWithTimesAverageConvergenceModel;
@@ -83,7 +84,7 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
         pathResult.println("DT" + '\t' + b + "\tNULL\tNULL");
     }
 
-    public boolean performSimulationsForANetwork(int nodes, int nodeMinRadius, int nodeMaxRadius, String networkPath) {
+    public boolean performSimulationsForANetwork(int nodes, int networkSize, int nodeMinRadius, int nodeMaxRadius, String networkPath, WMBusDeviceConfig wmbusDeviceConfig) {
         // Generate network.
 
         NetworkGeneratorInterconnected2DInstance neighbornSpace;
@@ -118,7 +119,7 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
         while (true){
             System.out.println("Create network with " + String.valueOf(nodes) + " nodes  networkLoad:" + String.valueOf(networkLoad));
             Instant nstart = Instant.now();
-            YangNetwork attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(nodes, 2500, nodeMinRadius, nodeMaxRadius, 2500, 2500, -1);
+            YangNetwork attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(nodes, networkSize/2, nodeMinRadius, nodeMaxRadius, networkSize/2, networkSize/2, -1);
             Instant nend = Instant.now();
             System.out.println("Network created in  " + Duration.between(nstart, nend).toSeconds() + " seconds");
             System.out.flush();
@@ -139,7 +140,7 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
             // EXPORT NETWORK.
             attempt.save(networkPath + String.valueOf(networkLoad) + "/with_space.csv", true);
             attempt.save(networkPath + String.valueOf(networkLoad) + "/without_space.csv", false);
-            attempt.saveNetworkImage(5000, 5000, networkPath + String.valueOf(networkLoad) + "/with_space.png");
+            attempt.saveNetworkImage(networkSize, networkSize,nodeMaxRadius, networkPath + String.valueOf(networkLoad) + "/with_space.png");
 
             neighbornSpace = (NetworkGeneratorInterconnected2DInstance) attempt.withNeighbor;
 
@@ -177,8 +178,8 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
                     }
 
                     WMBusStats result = WMBUSSimulationGenerator.performSimulation(
-                            new SimulationNetworkWithDistance(neighbornSpace), withHamming, withWakeUp, withDetailNoise, this
-                    );
+                            new SimulationNetworkWithDistance(neighbornSpace), withHamming, withWakeUp, withDetailNoise, this,
+                            wmbusDeviceConfig);
                     Instant end = Instant.now();
                     System.out.println("Simulation #" + String.valueOf(c) + " Duration: " + Duration.between(start, end).toSeconds() + " seconds");
                     System.out.flush();

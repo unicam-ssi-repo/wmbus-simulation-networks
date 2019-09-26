@@ -1,16 +1,27 @@
 package org.wmbus.simulations.network.single;
 
+import org.wmbus.protocol.config.WMBusDeviceConfig;
+
 import java.io.File;
 
 public class WMBUSSimulationRun {
     private int networkSizeFrom;
     private int networkSizeTo;
-    private String folderPath;
 
-    public WMBUSSimulationRun(int networkSizeFrom, int networkSizeTo, String folderPath) {
+    private String folderPath;
+    private WMBusDeviceConfig deviceConfig;
+    private int minNodeDistance;
+    private int maxNodeDistance;
+    private int networkSizePX;
+
+    public WMBUSSimulationRun(int networkSizeFrom, int networkSizeTo, int networkSizePX, String folderPath, WMBusDeviceConfig deviceConfig, int minNodeDistance, int maxNodeDistance) {
         this.networkSizeFrom = networkSizeFrom;
         this.networkSizeTo = networkSizeTo;
+        this.networkSizePX = networkSizePX;
         this.folderPath = folderPath;
+        this.deviceConfig = deviceConfig;
+        this.minNodeDistance = minNodeDistance;
+        this.maxNodeDistance = maxNodeDistance;
     }
 
     public void run() {
@@ -23,10 +34,10 @@ public class WMBUSSimulationRun {
             boolean succ = dir.mkdir();
 
             if (!succ) {
-                System.out.println("Failed to create " + baseFolder);
+                System.out.println("Failed to create " + baseFolder+ "Please clean the directory.");
                 continue;
             }
-            simulations.performSimulationsForANetwork(nodes,0,5,25, baseFolder);
+            simulations.performSimulationsForANetwork(nodes,0, networkSizePX,this.minNodeDistance,this.maxNodeDistance, baseFolder,deviceConfig);
             /*for (int networkRange = 0; networkRange < 3; networkRange++){
                 if (networkRange == 0){
                     simulations.performSimulationsForANetwork(nodes,networkRange,10,50, baseFolder);
