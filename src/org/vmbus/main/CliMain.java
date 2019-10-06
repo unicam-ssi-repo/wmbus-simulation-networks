@@ -53,6 +53,14 @@ public class CliMain {
         vo.setType(String.class);
         options.addOption(vo);
 
+        Option savePath = new Option("osp", "outputsp", false, "Save paths in file. ( default false )");
+        savePath.setType(Boolean.class);
+        options.addOption(savePath);
+
+        Option convergencePath = new Option("ocp", "outputcp", false, "Save convergence path (default true)");
+        convergencePath.setType(Boolean.class);
+        options.addOption(convergencePath);
+
 
         // Parsing stuff.
         CommandLineParser parser = new DefaultParser();
@@ -77,8 +85,10 @@ public class CliMain {
         int networkSize  = Integer.parseInt(cmd.getOptionValue("networksize", "5000"));
         int minDistance  = Integer.parseInt(cmd.getOptionValue("mindistance", "5"));
         int maxDistance = Integer.parseInt(cmd.getOptionValue("maxdistance", "250"));
-        boolean multi = Boolean.parseBoolean(cmd.getOptionValue("multi", "false"));
+        boolean multi = cmd.hasOption("multi");
         String verbose = cmd.getOptionValue("verbose", "OFF");
+        boolean convergencePathOutput = Boolean.parseBoolean(cmd.getOptionValue("outputcp", "false"));
+        boolean savePathOutput = Boolean.parseBoolean(cmd.getOptionValue("outputsp", "false"));
 
         Configurator.currentConfig()
                 .formatPattern("{level}: {class}.{method}()\t{message}")
@@ -97,7 +107,9 @@ public class CliMain {
                     System.getProperty("user.dir") + "/mresults/",
                     minDistance,
                     maxDistance,
-                    networkSize
+                    networkSize,
+                    savePathOutput,
+                    convergencePathOutput
             );
             simulation.run();
         } else {
@@ -108,7 +120,9 @@ public class CliMain {
                     System.getProperty("user.dir") + "/results/",
                     wmbusDeviceConfig,
                     minDistance,
-                    maxDistance
+                    maxDistance,
+                    savePathOutput,
+                    convergencePathOutput
             );
             simulation.run();
         }

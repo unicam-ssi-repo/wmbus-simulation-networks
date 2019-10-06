@@ -4,7 +4,6 @@ import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.simulations.network.multiple.WMBUSSimulationMultipleRun;
-import org.wmbus.simulations.network.single.WMBUSSimulationRun;
 
 public class SimulationsMultipleMain {
     public static void main(String[] args) {
@@ -29,8 +28,8 @@ public class SimulationsMultipleMain {
                 System.getProperty("user.dir") + "/mresults/",
                 5,
                 250,
-                5000
-                );
+                5000,
+                false, true);
         simulation.run();
     }
 }

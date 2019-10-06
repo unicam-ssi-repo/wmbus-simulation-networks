@@ -28,21 +28,26 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
     private PrintWriter pathResult;
     private PrintWriter readableFormat;
     private PrintWriter dataCsvFormat;
+    private boolean saveConvergenceOutput;
+    private boolean savePathOutput;
 
     public void WMBUSMultipleSimulations() {
         // generate array of multiple convergences.
     }
 
     public void provideMeasure(double measuredValue, int step, double convergenceValue) {
-        String stepStr = "";
-        if (step == ConvergenceState.CONVERGENCE_STATE_CONTINUE) {
-            stepStr = "CONTINUE";
-        } else if (step == ConvergenceState.CONVERGENCE_STATE_STOP_CONVERGENCE) {
-            stepStr = "CONVERGE";
-        } else if (step == ConvergenceState.CONVERGENCE_STATE_STOP_NOTCONVERGENCE) {
-            stepStr = "NONVERGE";
+        if (convergenceResult != null ){
+            String stepStr = "";
+            if (step == ConvergenceState.CONVERGENCE_STATE_CONTINUE) {
+                stepStr = "CONTINUE";
+            } else if (step == ConvergenceState.CONVERGENCE_STATE_STOP_CONVERGENCE) {
+                stepStr = "CONVERGE";
+            } else if (step == ConvergenceState.CONVERGENCE_STATE_STOP_NOTCONVERGENCE) {
+                stepStr = "NONVERGE";
+            }
+            convergenceResult.println(measuredValue + '\t' + stepStr + '\t' + convergenceValue);
         }
-        convergenceResult.println(measuredValue + '\t' + stepStr + '\t' + convergenceValue);
+
     }
 
     @Override
@@ -53,7 +58,7 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
     @Override
     public void pathEnd(boolean success) {
         // Can be triggered many times.
-        if (this.track != null) {
+        if (this.pathResult != null) {
             this.track.success = success;
             // save data.
             pathResult.println(this.track.toString());
@@ -68,23 +73,27 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
 
     @Override
     public void pathPredict(Integer integer, ArrayList<Integer> path) {
-        String ps = "";
-        for (int i = 0; i < path.size(); i++) {
-            if (i == 0) {
-                ps += String.valueOf(path.get(i));
-            } else {
-                ps = ps + ',' + String.valueOf(path.get(i));
+        if (pathResult != null) {
+            String ps = "";
+            for (int i = 0; i < path.size(); i++) {
+                if (i == 0) {
+                    ps += String.valueOf(path.get(i));
+                } else {
+                    ps = ps + ',' + String.valueOf(path.get(i));
+                }
             }
+            pathResult.println("PR" + '\t' + "NULL" + '\t' + integer + '\t' + ps);
         }
-        pathResult.println("PR" + '\t' + "NULL" + '\t' + integer + '\t' + ps);
     }
 
     @Override
     public void globalPathEnd(boolean b) {
-        pathResult.println("DT" + '\t' + b + "\tNULL\tNULL");
+        if (pathResult != null) {
+            pathResult.println("DT" + '\t' + b + "\tNULL\tNULL");
+        }
     }
 
-    public boolean performSimulationsForANetwork(int nodes, int networkSize, int nodeMinRadius, int nodeMaxRadius, String networkPath, WMBusDeviceConfig wmbusDeviceConfig) {
+    public boolean performSimulationsForANetwork(int nodes, int networkSize, int nodeMinRadius, int nodeMaxRadius, String networkPath, WMBusDeviceConfig wmbusDeviceConfig, boolean saveConvergenceOutput, boolean savePathOutput) {
         // Generate network.
 
         NetworkGeneratorInterconnected2DInstance neighbornSpace;
@@ -123,6 +132,7 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
             Instant nend = Instant.now();
             System.out.println("Network created in  " + Duration.between(nstart, nend).toSeconds() + " seconds");
             System.out.flush();
+
             // No generated network.
             if (attempt == null) {
                 return false;
@@ -143,6 +153,18 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
             attempt.saveNetworkImage(networkSize, networkSize,nodeMaxRadius, networkPath + String.valueOf(networkLoad) + "/with_space.png");
 
             neighbornSpace = (NetworkGeneratorInterconnected2DInstance) attempt.withNeighbor;
+            double avgDistance = neighbornSpace.getAvgDistance();
+            double varDistance = neighbornSpace.getVarianceDistance();
+            double networkDensity = neighbornSpace.getDensity();
+            double networkDensitySizeY = neighbornSpace.getDensitySizeX();
+            double networkDensitySizeX = neighbornSpace.getDensitySizeY();
+            double networkArea = neighbornSpace.getDensityArea();
+            System.out.println("Network Avg distance: " + avgDistance);
+            System.out.println("Network Avg variance: "+varDistance);
+            System.out.println("Network Area (m^2): "+networkArea );
+            System.out.println("Network Size Width: "+networkDensitySizeX);
+            System.out.println("Network Size Height: "+networkDensitySizeY);
+            System.out.println("Network Density(nodes/m^2): "+networkDensity);
 
             boolean withHamming = false;
             boolean withWakeUp = false;
@@ -171,8 +193,17 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
                     try {
                         readableFormat = new PrintWriter(folder + "/readableFormat.txt");
                         dataCsvFormat = new PrintWriter(folder + "/data.csv");
-                        convergenceResult = new PrintWriter(folder + "/convergence.csv");
-                        pathResult = new PrintWriter(folder + "/paths.csv");
+                        if (saveConvergenceOutput){
+                            convergenceResult = new PrintWriter(folder + "/convergence.csv");
+                        } else {
+                            convergenceResult = null;
+                        }
+                        if (savePathOutput){
+                            pathResult = new PrintWriter(folder + "/paths.csv");
+                        }else {
+                            pathResult = null;
+                        }
+
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -185,6 +216,12 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
                     System.out.flush();
                     ResultTable res = result.printResults();
 
+                    res.addRow("Network Avg distance: ",avgDistance);
+                    res.addRow("Network Avg variance: ",varDistance);
+                    res.addRow("Network Area (m^2): ",networkArea );
+                    res.addRow("Network Size Width: ",networkDensitySizeX);
+                    res.addRow("Network Size Height: ",networkDensitySizeY);
+                    res.addRow("Network Density(nodes/m^2): ",networkDensity);
 
                     String prettyPrint = res.prettyPrint();
 
@@ -196,8 +233,12 @@ public class WMBUSMultipleSimulations implements WMbusSimulationEventInterface {
                     dataCsvFormat.println(prettyPrint);
                     dataCsvFormat.close();
 
-                    convergenceResult.close();
-                    pathResult.close();
+                    if (convergenceResult != null){
+                        convergenceResult.close();
+                    }
+                    if (pathResult != null){
+                        pathResult.close();
+                    }
                     double fault = (result.masterTrasmissionFaultWithNoUpdate + result.masterTrasmissionFaultWithUpdate) / result.masterSentMessage;
                     int convMeasure = convergenceModels.get(c - 1).addMeasure(fault);
                     System.out.println("Network Simulation Convergence: " + convergenceModels.get(c - 1).percentageConvergence+ " %");

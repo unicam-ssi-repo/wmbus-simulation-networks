@@ -29,8 +29,8 @@ public class SimulationsMain {
                 System.getProperty("user.dir") + "/results/",
                 wmbusDeviceConfig,
                 5,
-                250
-        );
+                250,
+                false, true);
         simulation.run();
     }
 }

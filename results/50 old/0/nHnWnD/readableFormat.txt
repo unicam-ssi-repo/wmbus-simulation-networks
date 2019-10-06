@@ -1,0 +1,27 @@
+Avg BER: 	0.0012663155617260505
+Avg SNR: 	15.095856743974704
+Avg noise dbm: 	-79.45190526840364
+Convergence (0-yes,1-no):	0.0
+Max BER: 	0.013909531996514604
+Max SNR: 	56.71844823739373
+Min BER: 	2.5144770119517463E-14
+Min SNR: 	4.839245498528612
+Network Avg distance: 	225.0102178188951
+Network Avg variance: 	193.69797721990173
+RM: Device-Device Request Failed Probability :	0.2911232113838196
+RM: Device-Device Request Success Probability :	99.70887756347656
+RM: Device-Device Response Failed Probability :	0.29121044278144836
+RM: Device-Device Response Success Probability :	99.70878601074219
+RM: Master Fault %:	2.8894798936191486
+RM: Master average path length:	6.104801135795557
+RM: Request Header size	144.0
+RM: Request Packet Block count:	2.0
+RM: Request Packet size	18.0
+RM: Request Payload size (ecc):	18.0
+RM: Request Payload size (no-ecc):	18.0
+RM: Response Header size	144.0
+RM: Response Packet Block count:	2.0
+RM: Response Packet size	21.0
+RM: Response Payload size (ecc):	21.0
+RM: Response Payload size (no-ecc):	21.0
+
